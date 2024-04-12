@@ -25,14 +25,61 @@ namespace Modbus.ModbusFunctions
         public override byte[] PackRequest()
         {
             //TO DO: IMPLEMENT
-            throw new NotImplementedException();
+            ModbusReadCommandParameters parametri = CommandParameters as ModbusReadCommandParameters;
+
+            byte[] zahtev = new byte[12];
+
+            zahtev[0] = BitConverter.GetBytes(parametri.TransactionId)[0];
+            zahtev[1] = BitConverter.GetBytes(parametri.TransactionId)[1];
+            zahtev[2] = BitConverter.GetBytes(parametri.ProtocolId)[0];
+            zahtev[3] = BitConverter.GetBytes(parametri.ProtocolId)[1];
+            zahtev[4] = BitConverter.GetBytes(parametri.Length)[0];
+            zahtev[5] = BitConverter.GetBytes(parametri.Length)[1];
+            zahtev[6] = parametri.UnitId;
+            zahtev[7] = parametri.FunctionCode;
+            zahtev[8] = BitConverter.GetBytes(parametri.StartAddress)[0];
+            zahtev[9] = BitConverter.GetBytes(parametri.StartAddress)[1];
+            zahtev[10] = BitConverter.GetBytes(parametri.Quantity)[0];
+            zahtev[11] = BitConverter.GetBytes(parametri.Quantity)[1];
+
+            return zahtev;
         }
 
         /// <inheritdoc />
-        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
+        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] zahtev)
         {
             //TO DO: IMPLEMENT
-            throw new NotImplementedException();
+            Dictionary<Tuple<PointType, ushort>, ushort> zahtevRecnik = new Dictionary<Tuple<PointType, ushort>, ushort>();
+
+            int brojBitova = zahtev[8];
+            ushort startnaAdresa = ((ModbusReadCommandParameters)CommandParameters).StartAddress;
+            ushort brojac = 0;
+
+            for (int i = 0; i < brojBitova; i++)
+            {
+                byte pomocni = zahtev[9 + i];
+                byte maska = 1;
+
+                ushort kolicina = ((ModbusReadCommandParameters)CommandParameters).Quantity;
+
+                for (int j = 0; j < 8; j++)
+                {
+                    ushort vrednost = (ushort)(pomocni & maska);
+                    Tuple<PointType, ushort> novaTorka = new Tuple<PointType, ushort>(PointType.DIGITAL_INPUT, startnaAdresa++);
+                    zahtevRecnik.Add(novaTorka, vrednost);
+
+                    pomocni >>= 1;
+                    brojac++;
+
+                    if (brojac >= kolicina)
+                    {
+                        break;
+                    }
+
+                }
+            }
+
+            return zahtevRecnik;
         }
     }
 }
