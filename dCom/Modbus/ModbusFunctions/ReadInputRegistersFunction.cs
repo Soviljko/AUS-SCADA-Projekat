@@ -48,20 +48,21 @@ namespace Modbus.ModbusFunctions
         public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
         {
             //TO DO: IMPLEMENT
-            Dictionary<Tuple<PointType, ushort>, ushort> responseDict = new Dictionary<Tuple<PointType, ushort>, ushort>();
 
-            int byteCounter = response[8];
-            ushort startAddress = ((ModbusReadCommandParameters)CommandParameters).StartAddress;
+            Dictionary<Tuple<PointType, ushort>, ushort> zahtevRecnik = new Dictionary<Tuple<PointType, ushort>, ushort>();
 
-            for (int i = 0; i < byteCounter; i += 2)
+            int brojBitova = response[8];
+            ushort startnaAdresa = ((ModbusReadCommandParameters)CommandParameters).StartAddress;
+
+            for (int i = 0; i < brojBitova; i += 2)
             {
 
                 ushort value = (ushort)IPAddress.NetworkToHostOrder((short)BitConverter.ToUInt16(response, 9 + i));
-                Tuple<PointType, ushort> tuple = new Tuple<PointType, ushort>(PointType.ANALOG_INPUT, startAddress++);
-                responseDict.Add(tuple, value);
+                Tuple<PointType, ushort> tuple = new Tuple<PointType, ushort>(PointType.ANALOG_INPUT, startnaAdresa++);
+                zahtevRecnik.Add(tuple, value);
             }
 
-            return responseDict;
+            return zahtevRecnik;
         }
     }
 }

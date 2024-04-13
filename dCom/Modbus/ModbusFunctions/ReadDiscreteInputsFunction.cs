@@ -50,30 +50,31 @@ namespace Modbus.ModbusFunctions
         public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
         {
             //TO DO: IMPLEMENT
-            Dictionary<Tuple<PointType, ushort>, ushort> responseDict = new Dictionary<Tuple<PointType, ushort>, ushort>();
 
-            int byteCounter = response[8];
-            ushort startAddress = ((ModbusReadCommandParameters)CommandParameters).StartAddress;
-            ushort counter = 0;
+            Dictionary<Tuple<PointType, ushort>, ushort> zahtevRecnik = new Dictionary<Tuple<PointType, ushort>, ushort>();
 
-            for (int i = 0; i < byteCounter; i++)
+            int brojBitova = response[8];
+            ushort startnaAdresa = ((ModbusReadCommandParameters)CommandParameters).StartAddress;
+            ushort brojac = 0;
+
+            for (int i = 0; i < brojBitova; i++)
             {
 
                 byte temp = response[9 + i];
-                byte mask = 1;
+                byte maska = 1;
 
-                ushort quantity = ((ModbusReadCommandParameters)CommandParameters).Quantity;
+                ushort kolicina = ((ModbusReadCommandParameters)CommandParameters).Quantity;
 
                 for (int j = 0; j < 8; j++)
                 {
 
-                    ushort value = (ushort)(temp & mask);
-                    responseDict.Add(new Tuple<PointType, ushort>(PointType.DIGITAL_INPUT, startAddress++), value);
+                    ushort vrednost = (ushort)(temp & maska);
+                    zahtevRecnik.Add(new Tuple<PointType, ushort>(PointType.DIGITAL_INPUT, startnaAdresa++), vrednost);
 
                     temp >>= 1;
-                    counter++;
+                    brojac++;
 
-                    if (counter >= quantity)
+                    if (brojac >= kolicina)
                     {
 
                         break;
@@ -82,7 +83,7 @@ namespace Modbus.ModbusFunctions
                 }
             }
 
-            return responseDict;
+            return zahtevRecnik;
         }
     }
 }
