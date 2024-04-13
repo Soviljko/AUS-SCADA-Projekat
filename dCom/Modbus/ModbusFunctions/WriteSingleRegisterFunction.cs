@@ -26,39 +26,39 @@ namespace Modbus.ModbusFunctions
         {
             //TO DO: IMPLEMENT
 
-            ModbusWriteCommandParameters parametri = CommandParameters as ModbusWriteCommandParameters;
+            ModbusWriteCommandParameters parameters = CommandParameters as ModbusWriteCommandParameters;
 
-            byte[] zahtev = new byte[12];
+            byte[] request = new byte[12];
 
-            zahtev[0] = BitConverter.GetBytes(parametri.TransactionId)[0];
-            zahtev[1] = BitConverter.GetBytes(parametri.TransactionId)[1];
-            zahtev[2] = BitConverter.GetBytes(parametri.ProtocolId)[0];
-            zahtev[3] = BitConverter.GetBytes(parametri.ProtocolId)[1];
-            zahtev[4] = BitConverter.GetBytes(parametri.Length)[0];
-            zahtev[5] = BitConverter.GetBytes(parametri.Length)[1];
-            zahtev[6] = parametri.UnitId;
-            zahtev[7] = parametri.FunctionCode;
-            zahtev[8] = BitConverter.GetBytes(parametri.OutputAddress)[0];
-            zahtev[9] = BitConverter.GetBytes(parametri.OutputAddress)[1];
-            zahtev[10] = BitConverter.GetBytes(parametri.Value)[0];
-            zahtev[11] = BitConverter.GetBytes(parametri.Value)[1];
+            request[0] = BitConverter.GetBytes(parameters.TransactionId)[1];
+            request[1] = BitConverter.GetBytes(parameters.TransactionId)[0];
+            request[2] = BitConverter.GetBytes(parameters.ProtocolId)[1];
+            request[3] = BitConverter.GetBytes(parameters.ProtocolId)[0];
+            request[4] = BitConverter.GetBytes(parameters.Length)[1];
+            request[5] = BitConverter.GetBytes(parameters.Length)[0];
+            request[6] = parameters.UnitId;
+            request[7] = parameters.FunctionCode;
+            request[8] = BitConverter.GetBytes(parameters.OutputAddress)[1];
+            request[9] = BitConverter.GetBytes(parameters.OutputAddress)[0];
+            request[10] = BitConverter.GetBytes(parameters.Value)[1];
+            request[11] = BitConverter.GetBytes(parameters.Value)[0];
 
-            return zahtev;
+            return request;
         }
 
         /// <inheritdoc />
-        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] zahtev)
+        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
         {
             //TO DO: IMPLEMENT
 
-            Dictionary<Tuple<PointType, ushort>, ushort> zahtevRecnik = new Dictionary<Tuple<PointType, ushort>, ushort>();
+            Dictionary<Tuple<PointType, ushort>, ushort> responseDict = new Dictionary<Tuple<PointType, ushort>, ushort>();
 
-            ushort izlaznaAdresa = (ushort)IPAddress.NetworkToHostOrder((short)BitConverter.ToUInt16(zahtev, 8));
-            ushort vrednost = (ushort)IPAddress.NetworkToHostOrder((short)BitConverter.ToUInt16(zahtev, 10));
+            ushort outputAddress = (ushort)IPAddress.NetworkToHostOrder((short)BitConverter.ToUInt16(response, 8));
+            ushort value = (ushort)IPAddress.NetworkToHostOrder((short)BitConverter.ToUInt16(response, 10));
 
-            zahtevRecnik.Add(new Tuple<PointType, ushort>(PointType.ANALOG_OUTPUT, izlaznaAdresa), vrednost);
+            responseDict.Add(new Tuple<PointType, ushort>(PointType.ANALOG_OUTPUT, outputAddress), value);
 
-            return zahtevRecnik;
+            return responseDict;
         }
     }
 }
