@@ -3,6 +3,6 @@ TCP 61239
 
 DO_REG  2 3300 0 0 1 0 DO @PrekidacTrake 2
 DO_REG  2 3302 0 0 1 0 DO @PrekidacVeslanje 2
-IN_REG  1 3200 0 0 2000 100 AI @SenzorBrojacKalorija 4
+IN_REG  1 3200 0 0 1000 100 AI @SenzorBrojacKalorija 4
 IN_REG  1 3201 0 0 100 20 AI @SenzorOpterecenje 4
 IN_REG  2 3202 0 0 150 80 AI @SenzorSrcaniRitam 4

@@ -58,7 +58,7 @@ namespace Modbus.ModbusFunctions
             for (int i = 0; i < brojacBitova; i += 2)
             {
                 ushort vrednost = (ushort)IPAddress.NetworkToHostOrder((short)BitConverter.ToUInt16(zahtev, 9 + i));
-                Tuple<PointType, ushort> novaTorka = new Tuple<PointType, ushort>(PointType.ANALOG_OUTPUT, startnaAdresa++);
+                Tuple<PointType, ushort> novaTorka = new Tuple<PointType, ushort>(PointType.ANALOG_INPUT, startnaAdresa++);
                 zahtevRecnik.Add(novaTorka, vrednost);
             }
 

@@ -68,8 +68,7 @@ namespace Modbus.ModbusFunctions
                 for(int j = 0; j < 8; j++)
                 {
                     ushort vrednost = (ushort)(pomocni & maska);
-                    Tuple<PointType, ushort> novaTorka = new Tuple<PointType, ushort>(PointType.DIGITAL_OUTPUT, startnaAdresa++);
-                    zahtevRecnik.Add(novaTorka, vrednost);
+                    zahtevRecnik.Add(new Tuple<PointType, ushort>(PointType.DIGITAL_OUTPUT, startnaAdresa++), vrednost);
 
                     pomocni >>= 1;
                     brojac++;
